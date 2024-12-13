@@ -1,0 +1,28 @@
+body {
+	background-color: #000000;
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+canvas {
+	border: 1px solid #ffffff;
+	border-radius: 10px;
+	margin-top: 20px;
+	margin-left: 20px;
+}
+
+.container {
+	display: flex;
+}
+
+.controls {
+	display: flex;
+	justify-content: space-between;
+}
+
+#button1,
+#button2,
+#button3 {
+	margin-top: 20px;
+}

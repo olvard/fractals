@@ -9,8 +9,8 @@ async function main() {
 	}
 
 	// Load shader sources
-	const vertexShaderSource = await loadShaderSource('vertex.glsl')
-	const fragmentShaderSource = await loadShaderSource('fragment.glsl')
+	const vertexShaderSource = await loadShaderSource('shaders/vertex.glsl')
+	const fragmentShaderSource = await loadShaderSource('shaders/fragment.glsl')
 
 	// Create shader program
 	const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
@@ -62,7 +62,7 @@ async function main() {
 
 	canvas.addEventListener('wheel', (e) => {
 		e.preventDefault()
-		const zoomSpeed = 0.1
+		const zoomSpeed = 0.01
 		const zoomFactor = e.deltaY > 0 ? 1 + zoomSpeed : 1 - zoomSpeed
 		zoom *= zoomFactor
 		updateFractal()

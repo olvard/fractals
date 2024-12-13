@@ -4,9 +4,57 @@
 		<meta charset="utf-8" />
 		<title>WebGL Demo</title>
 		<script src="webgl.js" type="module"></script>
+		<link rel="stylesheet" href="style.css" />
 	</head>
 
 	<body>
-		<canvas id="gl-canvas" width="800" height="800"></canvas>
+		<div class="container">
+			<canvas id="gl-canvas" width="800" height="800"></canvas>
+
+			<div class="controls">
+				<div>
+					<button id="button1">Mandelbrot</button>
+					<div id="controls1" style="display: none">
+						<!-- Sub controls for Button 1 -->
+						<input type="text" placeholder="Control 1.1" />
+						<input type="text" placeholder="Control 1.2" />
+					</div>
+				</div>
+
+				<div>
+					<button id="button2">Buddhabroth</button>
+					<div id="controls2" style="display: none">
+						<!-- Sub controls for Button 2 -->
+						<input type="text" placeholder="Control 2.1" />
+						<input type="text" placeholder="Control 2.2" />
+					</div>
+				</div>
+
+				<div>
+					<button id="button3">Mandelbulb</button>
+					<div id="controls3" style="display: none">
+						<!-- Sub controls for Button 3 -->
+						<input type="text" placeholder="Control 3.1" />
+						<input type="text" placeholder="Control 3.2" />
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			document.getElementById('button1').addEventListener('click', function () {
+				const controls = document.getElementById('controls1')
+				controls.style.display = controls.style.display === 'none' ? 'block' : 'none'
+			})
+
+			document.getElementById('button2').addEventListener('click', function () {
+				const controls = document.getElementById('controls2')
+				controls.style.display = controls.style.display === 'none' ? 'block' : 'none'
+			})
+
+			document.getElementById('button3').addEventListener('click', function () {
+				const controls = document.getElementById('controls3')
+				controls.style.display = controls.style.display === 'none' ? 'block' : 'none'
+			})
+		</script>
 	</body>
 </html>

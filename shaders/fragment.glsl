@@ -18,7 +18,7 @@ void main() {
 
 	// iterate the mandelbrot function
 	float iterations = 0.0;
-	const float maxIterations = 300.0;
+	const float maxIterations = 1000.0;
 
 	for(float n = 0.0; n < maxIterations; n++){
 		// z = z^2 + c
