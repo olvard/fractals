@@ -43,10 +43,64 @@ async function main() {
 		0 // start at the beginning of the buffer
 	)
 
-	// set uniforms
+	// Set uniforms
 	const resolutionUniformLocation = gl.getUniformLocation(program, 'u_resolution')
+	const zoomUniformLocation = gl.getUniformLocation(program, 'u_zoom')
+	const offsetUniformLocation = gl.getUniformLocation(program, 'u_offset')
+
+	let zoom = 0.5
+	let offsetX = 0.5
+	let offsetY = 0.0
 
 	gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height)
+
+	function updateFractal() {
+		gl.uniform2f(offsetUniformLocation, offsetX, offsetY)
+		gl.uniform1f(zoomUniformLocation, zoom)
+		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+	}
+
+	canvas.addEventListener('wheel', (e) => {
+		e.preventDefault()
+		const zoomSpeed = 0.1
+		const zoomFactor = e.deltaY > 0 ? 1 + zoomSpeed : 1 - zoomSpeed
+		zoom *= zoomFactor
+		updateFractal()
+	})
+
+	let isDragging = false
+	let lastX = 0
+	let lastY = 0
+
+	canvas.addEventListener('mousedown', (e) => {
+		isDragging = true
+		lastX = e.clientX
+		lastY = e.clientY
+	})
+
+	canvas.addEventListener('mousemove', (e) => {
+		if (isDragging) {
+			const deltaX = e.clientX - lastX
+			const deltaY = e.clientY - lastY
+			const panSpeed = 0.001 / zoom
+
+			offsetX += deltaX * panSpeed
+			offsetY -= deltaY * panSpeed
+
+			lastX = e.clientX
+			lastY = e.clientY
+
+			updateFractal()
+		}
+	})
+
+	canvas.addEventListener('mouseup', () => {
+		isDragging = false
+	})
+
+	canvas.addEventListener('mouseleave', () => {
+		isDragging = false
+	})
 
 	// Set clear color to black, fully opaque
 	gl.clearColor(0.0, 0.0, 0.0, 1.0)
@@ -54,8 +108,7 @@ async function main() {
 	// Clear the color buffer
 	gl.clear(gl.COLOR_BUFFER_BIT)
 
-	// Draw the triangle
-	gl.drawArrays(gl.TRIANGLES, 0, 3)
+	updateFractal()
 }
 
 // Utility function to load shader source

@@ -1,10 +1,15 @@
 precision mediump float;
 uniform vec2 u_resolution;
+uniform vec2 u_offset;
+uniform float u_zoom;
 
 void main() {
 
-	// get pixel coordinates
-	vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+	// get pixel coordinates and nomalize them
+
+	vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution) / min(u_resolution.x, u_resolution.y);
+
+	uv = uv / u_zoom - u_offset;
 
 	// z, a complex number
 	vec2 z = vec2(0.0, 0.0);
@@ -34,7 +39,6 @@ void main() {
 		gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
 	} else {
 		gl_FragColor = vec4(normalized, normalized, normalized, 1.0);
-		
 	}
 	
 
