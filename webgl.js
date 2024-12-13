@@ -16,15 +16,7 @@ async function main() {
 	const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
 	gl.useProgram(program)
 
-	// Define the geometry
-	const vertices = new Float32Array([
-		-0.5,
-		-0.5, // First vertex
-		0.5,
-		-0.5, // Second vertex
-		0.0,
-		0.5, // Third vertex
-	])
+	const positions = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0]
 
 	// Create a buffer object
 	const vertexBuffer = gl.createBuffer()
@@ -33,7 +25,7 @@ async function main() {
 	gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer)
 
 	// Pass the vertex data to the buffer
-	gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW)
 
 	// Get the attribute location
 	const positionAttributeLocation = gl.getAttribLocation(program, 'a_Position')
@@ -50,6 +42,11 @@ async function main() {
 		0, // 0 = move forward size * sizeof(type) each iteration to get the next position
 		0 // start at the beginning of the buffer
 	)
+
+	// set uniforms
+	const resolutionUniformLocation = gl.getUniformLocation(program, 'u_resolution')
+
+	gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height)
 
 	// Set clear color to black, fully opaque
 	gl.clearColor(0.0, 0.0, 0.0, 1.0)
