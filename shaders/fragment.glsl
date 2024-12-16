@@ -3,6 +3,7 @@ uniform vec2 u_resolution;
 uniform vec2 u_offset;
 uniform float u_zoom;
 uniform float u_iterations;
+uniform int u_colorMode;
 
 void main() {
 
@@ -37,11 +38,36 @@ void main() {
 
 	float normalized = iterations / maxIterations;
 
-	if (iterations == maxIterations){
-		gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-	} else {
-		gl_FragColor = vec4(normalized, normalized, normalized, 1.0);
+	vec3 color;
+
+	if(u_colorMode == 0){
+		if (iterations == maxIterations){
+			color = vec3(0.0, 0.0, 0.0);
+		} else {
+			color = vec3(normalized, normalized, normalized);
+		}
+	} else if (u_colorMode == 1) {
+		// smooth coloring
+		float smoothedIterations = iterations - log2(log2(length(z))) + 4.0;
+		float normalized = smoothedIterations / maxIterations;
+		color = vec3(0.5 + 0.5 * cos(6.2831 * (normalized + vec3(0.0, 0.5, 1.0))));
+	} else if (u_colorMode == 2) {
+		// hue shifting
+		float hue = normalized; // Use normalized escape time for hue
+		color = vec3(0.5 + 0.5 * cos(6.2831 * hue + vec3(0.0, 0.33, 0.67))); // Hue shifting
+	} else if (u_colorMode == 3) {
+		// distance estimation
+		float distance = 0.5 * log(length(z)) / length(vec2(2.0 * z.x * z.y, z.x * z.x - z.y * z.y));
+		float shading = 1.0 - exp(-distance * 10.0);
+		color = vec3(shading) * vec3(0.0, 0.5, 1.0); // Adjust color scheme here
 	}
+
+	gl_FragColor = vec4(color, 1.0);
+
+
+
+
+
 	
 
 }

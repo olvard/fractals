@@ -38,15 +38,13 @@
 							value="30"
 							oninput="document.getElementById('iterations-value').textContent = this.value"
 						/>
-						<label for="color">Color Mix: <span id="color-value">50</span></label>
-						<input
-							type="range"
-							id="color"
-							min="0"
-							max="100"
-							value="50"
-							oninput="document.getElementById('color-value').textContent = this.value"
-						/>
+						<label for="colormode">Shading:</label>
+						<select id="colormode">
+							<option value="0">Normalized</option>
+							<option value="1">Smooth Gradient</option>
+							<option value="2">Hue Shifting</option>
+							<option value="3">Distance Estimation</option>
+						</select>
 					</div>
 
 					<div id="controls2" style="display: none">

@@ -48,11 +48,13 @@ async function main() {
 	const zoomUniformLocation = gl.getUniformLocation(program, 'u_zoom')
 	const offsetUniformLocation = gl.getUniformLocation(program, 'u_offset')
 	const iterationsUniformLocation = gl.getUniformLocation(program, 'u_iterations')
+	const colorUniformLocation = gl.getUniformLocation(program, 'u_colorMode')
 
 	let zoom = 0.5
 	let offsetX = 0.5
 	let offsetY = 0.0
 	let iterations = 30
+	let colorMode = 0
 
 	gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height)
 
@@ -60,6 +62,7 @@ async function main() {
 		gl.uniform2f(offsetUniformLocation, offsetX, offsetY)
 		gl.uniform1f(zoomUniformLocation, zoom)
 		gl.uniform1f(iterationsUniformLocation, iterations)
+		gl.uniform1i(colorUniformLocation, colorMode)
 		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 	}
 
@@ -67,6 +70,12 @@ async function main() {
 	const iterationsSlider = document.getElementById('iterations')
 	iterationsSlider.addEventListener('input', (e) => {
 		iterations = parseInt(e.target.value)
+		updateFractal()
+	})
+
+	const colorModeSelect = document.getElementById('colormode')
+	colorModeSelect.addEventListener('change', (e) => {
+		colorMode = parseInt(e.target.value)
 		updateFractal()
 	})
 
