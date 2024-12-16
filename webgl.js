@@ -47,18 +47,28 @@ async function main() {
 	const resolutionUniformLocation = gl.getUniformLocation(program, 'u_resolution')
 	const zoomUniformLocation = gl.getUniformLocation(program, 'u_zoom')
 	const offsetUniformLocation = gl.getUniformLocation(program, 'u_offset')
+	const iterationsUniformLocation = gl.getUniformLocation(program, 'u_iterations')
 
 	let zoom = 0.5
 	let offsetX = 0.5
 	let offsetY = 0.0
+	let iterations = 30
 
 	gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height)
 
 	function updateFractal() {
 		gl.uniform2f(offsetUniformLocation, offsetX, offsetY)
 		gl.uniform1f(zoomUniformLocation, zoom)
+		gl.uniform1f(iterationsUniformLocation, iterations)
 		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 	}
+
+	//event listeners
+	const iterationsSlider = document.getElementById('iterations')
+	iterationsSlider.addEventListener('input', (e) => {
+		iterations = parseInt(e.target.value)
+		updateFractal()
+	})
 
 	canvas.addEventListener('wheel', (e) => {
 		e.preventDefault()

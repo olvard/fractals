@@ -29,9 +29,24 @@
 					<div id="controls1">
 						<!-- Sub controls for Button 1 -->
 						<h2 style="color: white">Mandelbrot Controls</h2>
-						<label for="iterations">Iterations:</label>
-						<input type="range" min="0" max="100" value="50" />
-						<input type="range" min="0" max="100" value="50" />
+						<label for="iterations">Iterations: <span id="iterations-value">30</span></label>
+						<input
+							type="range"
+							id="iterations"
+							min="0"
+							max="1000"
+							value="30"
+							oninput="document.getElementById('iterations-value').textContent = this.value"
+						/>
+						<label for="color">Color Mix: <span id="color-value">50</span></label>
+						<input
+							type="range"
+							id="color"
+							min="0"
+							max="100"
+							value="50"
+							oninput="document.getElementById('color-value').textContent = this.value"
+						/>
 					</div>
 
 					<div id="controls2" style="display: none">

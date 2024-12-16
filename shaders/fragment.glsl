@@ -2,6 +2,7 @@ precision mediump float;
 uniform vec2 u_resolution;
 uniform vec2 u_offset;
 uniform float u_zoom;
+uniform float u_iterations;
 
 void main() {
 
@@ -18,9 +19,10 @@ void main() {
 
 	// iterate the mandelbrot function
 	float iterations = 0.0;
-	const float maxIterations = 1000.0;
+	float maxIterations = u_iterations;
 
-	for(float n = 0.0; n < maxIterations; n++){
+	for(float n = 0.0; n < 1000.0; n++){
+		if (n >= maxIterations) break;
 		// z = z^2 + c
 		z = vec2(
 		z.x * z.x - z.y * z.y + c.x, //a^2 - b^2 + c.x
