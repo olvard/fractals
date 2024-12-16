@@ -133,7 +133,7 @@ async function main() {
 	}
 
 	// Initial shader setup
-	currentShaderConfig = await initializeShaders('mandelbrot')
+	currentShaderConfig = await initializeShaders('buddhabrot')
 
 	// Render function
 	function updateFractal() {
@@ -182,6 +182,11 @@ async function main() {
 	})
 
 	document.getElementById('colormode').addEventListener('change', (e) => {
+		colorMode = parseInt(e.target.value)
+		updateFractal()
+	})
+
+	document.getElementById('bud_colormode').addEventListener('change', (e) => {
 		colorMode = parseInt(e.target.value)
 		updateFractal()
 	})
