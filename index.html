@@ -11,27 +11,35 @@
 		<div class="container">
 			<canvas id="gl-canvas" width="800" height="800"></canvas>
 
-			<div class="controls">
-				<div>
-					<button id="button1">Mandelbrot</button>
-					<div id="controls1" style="display: none">
-						<!-- Sub controls for Button 1 -->
-						<input type="text" placeholder="Control 1.1" />
-						<input type="text" placeholder="Control 1.2" />
+			<div class="right">
+				<div class="controls">
+					<div class="controlwrap">
+						<button id="button1">Mandelbrot</button>
+					</div>
+
+					<div class="controlwrap">
+						<button id="button2">Buddhabroth</button>
+					</div>
+
+					<div class="controlwrap">
+						<button id="button3">Mandelbulb</button>
 					</div>
 				</div>
+				<div class="popup">
+					<div id="controls1">
+						<!-- Sub controls for Button 1 -->
+						<h2 style="color: white">Mandelbrot Controls</h2>
+						<label for="iterations">Iterations:</label>
+						<input type="range" min="0" max="100" value="50" />
+						<input type="range" min="0" max="100" value="50" />
+					</div>
 
-				<div>
-					<button id="button2">Buddhabroth</button>
 					<div id="controls2" style="display: none">
 						<!-- Sub controls for Button 2 -->
 						<input type="text" placeholder="Control 2.1" />
 						<input type="text" placeholder="Control 2.2" />
 					</div>
-				</div>
 
-				<div>
-					<button id="button3">Mandelbulb</button>
 					<div id="controls3" style="display: none">
 						<!-- Sub controls for Button 3 -->
 						<input type="text" placeholder="Control 3.1" />
@@ -41,19 +49,28 @@
 			</div>
 		</div>
 		<script>
+			function hideAllControls() {
+				document.getElementById('controls1').style.display = 'none'
+				document.getElementById('controls2').style.display = 'none'
+				document.getElementById('controls3').style.display = 'none'
+			}
+
 			document.getElementById('button1').addEventListener('click', function () {
+				hideAllControls()
 				const controls = document.getElementById('controls1')
-				controls.style.display = controls.style.display === 'none' ? 'block' : 'none'
+				controls.style.display = 'flex'
 			})
 
 			document.getElementById('button2').addEventListener('click', function () {
+				hideAllControls()
 				const controls = document.getElementById('controls2')
-				controls.style.display = controls.style.display === 'none' ? 'block' : 'none'
+				controls.style.display = 'flex'
 			})
 
 			document.getElementById('button3').addEventListener('click', function () {
+				hideAllControls()
 				const controls = document.getElementById('controls3')
-				controls.style.display = controls.style.display === 'none' ? 'block' : 'none'
+				controls.style.display = 'flex'
 			})
 		</script>
 	</body>
