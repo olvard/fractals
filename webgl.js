@@ -1,4 +1,3 @@
-// main.js
 async function main() {
 	const canvas = document.querySelector('#gl-canvas')
 	const gl = canvas.getContext('webgl')
@@ -8,77 +7,186 @@ async function main() {
 		return
 	}
 
-	// Load shader sources
-	const vertexShaderSource = await loadShaderSource('shaders/vertex.glsl')
-	const fragmentShaderSource = await loadShaderSource('shaders/fragment.glsl')
+	// Configuration for different shaders
+	const shaderConfigs = {
+		mandelbrot: {
+			vertex: 'shaders/brot_vert.glsl',
+			fragment: 'shaders/brot_frag.glsl',
+		},
+		buddhabrot: {
+			vertex: 'shaders/buddha_vert.glsl',
+			fragment: 'shaders/buddha_frag.glsl',
+		},
+		mandelbulb: {
+			vertex: 'shaders/bulb_vert.glsl',
+			fragment: 'shaders/bulb_frag.glsl',
+		},
+	}
 
-	// Create shader program
-	const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
-	gl.useProgram(program)
-
-	const positions = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0]
-
-	// Create a buffer object
-	const vertexBuffer = gl.createBuffer()
-
-	// Bind the buffer object to target
-	gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer)
-
-	// Pass the vertex data to the buffer
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW)
-
-	// Get the attribute location
-	const positionAttributeLocation = gl.getAttribLocation(program, 'a_Position')
-
-	// Enable the attribute
-	gl.enableVertexAttribArray(positionAttributeLocation)
-
-	// Tell the attribute how to get data out of positionBuffer
-	gl.vertexAttribPointer(
-		positionAttributeLocation,
-		2, // 2 components per iteration
-		gl.FLOAT, // the data is 32bit floats
-		false, // don't normalize the data
-		0, // 0 = move forward size * sizeof(type) each iteration to get the next position
-		0 // start at the beginning of the buffer
-	)
-
-	// Set uniforms
-	const resolutionUniformLocation = gl.getUniformLocation(program, 'u_resolution')
-	const zoomUniformLocation = gl.getUniformLocation(program, 'u_zoom')
-	const offsetUniformLocation = gl.getUniformLocation(program, 'u_offset')
-	const iterationsUniformLocation = gl.getUniformLocation(program, 'u_iterations')
-	const colorUniformLocation = gl.getUniformLocation(program, 'u_colorMode')
-
+	// Shared state
+	let currentShaderConfig = null
 	let zoom = 0.5
 	let offsetX = 0.5
 	let offsetY = 0.0
 	let iterations = 30
 	let colorMode = 0
 
-	gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height)
+	// Function to load shader source
+	async function loadShaderSource(url) {
+		try {
+			const response = await fetch(url)
+			if (!response.ok) {
+				throw new Error(`Failed to load shader from ${url}: ${response.statusText}`)
+			}
+			return await response.text()
+		} catch (error) {
+			console.error(`Error loading shader source from ${url}:`, error)
+			throw error
+		}
+	}
 
+	// Function to create a shader
+	function createShader(gl, type, source) {
+		const shader = gl.createShader(type)
+		gl.shaderSource(shader, source)
+		gl.compileShader(shader)
+
+		if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+			const error = gl.getShaderInfoLog(shader)
+			console.error('Shader compilation error:', error)
+			gl.deleteShader(shader)
+			throw new Error(`Shader compilation failed: ${error}`)
+		}
+
+		return shader
+	}
+
+	// Function to create shader program
+	function createShaderProgram(gl, vertexShaderSource, fragmentShaderSource) {
+		try {
+			// Create shaders
+			const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource)
+			const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource)
+
+			// Create the shader program
+			const program = gl.createProgram()
+			gl.attachShader(program, vertexShader)
+			gl.attachShader(program, fragmentShader)
+			gl.linkProgram(program)
+
+			// Check linking status
+			if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+				const error = gl.getProgramInfoLog(program)
+				console.error('Shader program linking error:', error)
+				gl.deleteProgram(program)
+				throw new Error(`Shader program linking failed: ${error}`)
+			}
+
+			return program
+		} catch (error) {
+			console.error('Error creating shader program:', error)
+			throw error
+		}
+	}
+
+	// Function to set up shader program and buffers
+	async function initializeShaders(shaderKey) {
+		try {
+			console.log(`Initializing ${shaderKey} shader`)
+
+			// Load shader sources
+			const vertexShaderSource = await loadShaderSource(shaderConfigs[shaderKey].vertex)
+			const fragmentShaderSource = await loadShaderSource(shaderConfigs[shaderKey].fragment)
+
+			// Create shader program
+			const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
+			gl.useProgram(program)
+
+			// Set up vertex buffer
+			const positions = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0]
+			const vertexBuffer = gl.createBuffer()
+			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer)
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW)
+
+			// Set up attribute
+			const positionAttributeLocation = gl.getAttribLocation(program, 'a_Position')
+			gl.enableVertexAttribArray(positionAttributeLocation)
+			gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0)
+
+			// Get uniform locations
+			const uniforms = {
+				resolution: gl.getUniformLocation(program, 'u_resolution'),
+				zoom: gl.getUniformLocation(program, 'u_zoom'),
+				offset: gl.getUniformLocation(program, 'u_offset'),
+				iterations: gl.getUniformLocation(program, 'u_iterations'),
+				colorMode: gl.getUniformLocation(program, 'u_colorMode'),
+			}
+
+			// Set resolution uniform (doesn't change between shaders)
+			gl.uniform2f(uniforms.resolution, canvas.width, canvas.height)
+
+			return { program, uniforms }
+		} catch (error) {
+			console.error(`Failed to initialize ${shaderKey} shader:`, error)
+			throw error
+		}
+	}
+
+	// Initial shader setup
+	currentShaderConfig = await initializeShaders('mandelbrot')
+
+	// Render function
 	function updateFractal() {
-		gl.uniform2f(offsetUniformLocation, offsetX, offsetY)
-		gl.uniform1f(zoomUniformLocation, zoom)
-		gl.uniform1f(iterationsUniformLocation, iterations)
-		gl.uniform1i(colorUniformLocation, colorMode)
+		if (!currentShaderConfig) return
+
+		const { uniforms } = currentShaderConfig
+
+		// Set uniforms
+		gl.uniform2f(uniforms.offset, offsetX, offsetY)
+		gl.uniform1f(uniforms.zoom, zoom)
+		gl.uniform1f(uniforms.iterations, iterations)
+		gl.uniform1i(uniforms.colorMode, colorMode)
+
+		// Clear and draw
+		gl.clearColor(0.0, 0.0, 0.0, 1.0)
+		gl.clear(gl.COLOR_BUFFER_BIT)
 		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
 	}
 
-	//event listeners
-	const iterationsSlider = document.getElementById('iterations')
-	iterationsSlider.addEventListener('input', (e) => {
+	// Button event listeners
+	async function switchShader(shaderKey) {
+		try {
+			// Stop any ongoing operations
+			gl.useProgram(null)
+
+			// Initialize new shader
+			currentShaderConfig = await initializeShaders(shaderKey)
+
+			// Update fractal with current parameters
+			updateFractal()
+		} catch (error) {
+			console.error(`Error switching to ${shaderKey} shader:`, error)
+			alert(`Failed to switch to ${shaderKey} shader. Check console for details.`)
+		}
+	}
+
+	// Attach event listeners to buttons
+	document.getElementById('button1').addEventListener('click', () => switchShader('mandelbrot'))
+	document.getElementById('button2').addEventListener('click', () => switchShader('buddhabrot'))
+	document.getElementById('button3').addEventListener('click', () => switchShader('mandelbulb'))
+
+	// Other event listeners (iterations, color mode, etc.)
+	document.getElementById('iterations').addEventListener('input', (e) => {
 		iterations = parseInt(e.target.value)
 		updateFractal()
 	})
 
-	const colorModeSelect = document.getElementById('colormode')
-	colorModeSelect.addEventListener('change', (e) => {
+	document.getElementById('colormode').addEventListener('change', (e) => {
 		colorMode = parseInt(e.target.value)
 		updateFractal()
 	})
 
+	// Zoom and pan event listeners
 	canvas.addEventListener('wheel', (e) => {
 		e.preventDefault()
 		const zoomSpeed = 0.01
@@ -121,56 +229,8 @@ async function main() {
 		isDragging = false
 	})
 
-	// Set clear color to black, fully opaque
-	gl.clearColor(0.0, 0.0, 0.0, 1.0)
-
-	// Clear the color buffer
-	gl.clear(gl.COLOR_BUFFER_BIT)
-
+	// Initial render
 	updateFractal()
-}
-
-// Utility function to load shader source
-async function loadShaderSource(url) {
-	const response = await fetch(url)
-	return await response.text()
-}
-
-// Utility function to create a shader
-function createShader(gl, type, source) {
-	const shader = gl.createShader(type)
-	gl.shaderSource(shader, source)
-	gl.compileShader(shader)
-
-	// Check compilation status
-	if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-		console.error('An error occurred compiling the shaders: ' + gl.getShaderInfoLog(shader))
-		gl.deleteShader(shader)
-		return null
-	}
-
-	return shader
-}
-
-// Utility function to create the shader program
-function createShaderProgram(gl, vertexShaderSource, fragmentShaderSource) {
-	// Create shaders
-	const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource)
-	const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource)
-
-	// Create the shader program
-	const program = gl.createProgram()
-	gl.attachShader(program, vertexShader)
-	gl.attachShader(program, fragmentShader)
-	gl.linkProgram(program)
-
-	// Check linking status
-	if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-		console.error('Unable to initialize the shader program: ' + gl.getProgramInfoLog(program))
-		return null
-	}
-
-	return program
 }
 
 // Call main to start the WebGL program

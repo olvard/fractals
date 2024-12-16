@@ -26,7 +26,7 @@
 					</div>
 				</div>
 				<div class="popup">
-					<div id="controls1">
+					<div id="controls1" style="display: none">
 						<!-- Sub controls for Button 1 -->
 						<h2 style="color: white">Mandelbrot Controls</h2>
 						<label for="iterations">Iterations: <span id="iterations-value">30</span></label>
@@ -61,7 +61,7 @@
 				</div>
 			</div>
 		</div>
-		<script>
+		<script type="module">
 			function hideAllControls() {
 				document.getElementById('controls1').style.display = 'none'
 				document.getElementById('controls2').style.display = 'none'
