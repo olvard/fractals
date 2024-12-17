@@ -1,5 +1,7 @@
 async function main() {
 	const canvas = document.querySelector('#gl-canvas')
+	canvas.width = window.innerWidth
+	canvas.height = window.innerHeight
 	const gl = canvas.getContext('webgl')
 
 	if (gl === null) {
@@ -233,6 +235,16 @@ async function main() {
 
 	canvas.addEventListener('mouseleave', () => {
 		isDragging = false
+	})
+
+	window.addEventListener('resize', () => {
+		const canvas = document.getElementById('gl-canvas')
+		canvas.width = window.innerWidth
+		canvas.height = window.innerHeight
+		// You'll need to update your WebGL viewport here as well
+		gl.viewport(0, 0, canvas.width, canvas.height)
+		// Re-render your scene
+		updateFractal()
 	})
 
 	// Initial render

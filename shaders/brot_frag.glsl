@@ -21,7 +21,7 @@ void main() {
 	float iterations = 0.0;
 	float maxIterations = u_iterations; // Non-constant uniform value
 
-	const float MAX_LOOP = 20000.0; // Fixed maximum loop count
+	const float MAX_LOOP = 1000.0; // Fixed maximum loop count
 
 	for (float n = 0.0; n < MAX_LOOP; n += 1.0) {
 		if (n >= maxIterations) break;
@@ -67,7 +67,7 @@ void main() {
 				0.5 + 0.5 * cos(3.0 + normalized * 10.0 + 2.0),
 				0.5 + 0.5 * cos(3.0 + normalized * 10.0 + 4.0)
 			);
-		}xw
+		}
 	}
 
 	gl_FragColor = vec4(color, 1.0);

@@ -8,83 +8,64 @@
 	</head>
 
 	<body>
-		<div class="container">
-			<canvas id="gl-canvas" width="800" height="800"></canvas>
+		<canvas id="gl-canvas"></canvas>
 
-			<div class="right">
-				<div class="controls">
-					<div class="controlwrap">
-						<button id="button1">Mandelbrot</button>
-					</div>
+		<div class="controls-overlay">
+			<button id="button1">Mandelbrot</button>
+			<button id="button2">Buddhabrot</button>
+			<button id="button3">Mandelbulb</button>
+		</div>
 
-					<div class="controlwrap">
-						<button id="button2">Buddhabroth</button>
-					</div>
+		<div class="popup-overlay">
+			<div id="controls1" class="control-panel">
+				<h2>Mandelbrot Controls</h2>
+				<label for="iterations">Iterations: <span id="iterations-value">30</span></label>
+				<input
+					type="range"
+					id="iterations"
+					min="0"
+					max="1000"
+					value="30"
+					oninput="document.getElementById('iterations-value').textContent = this.value"
+				/>
+				<label for="colormode">Shading:</label>
+				<select id="colormode">
+					<option value="0">Normalized</option>
+					<option value="1">Unstable map</option>
+				</select>
+			</div>
 
-					<div class="controlwrap">
-						<button id="button3">Mandelbulb</button>
-					</div>
-				</div>
-				<div class="popup">
-					<div id="controls1" style="display: none">
-						<!-- Sub controls for Button 1 -->
-						<h2 style="color: white">Mandelbrot Controls</h2>
-						<label for="iterations">Iterations: <span id="iterations-value">30</span></label>
-						<input
-							type="range"
-							id="iterations"
-							min="0"
-							max="10000"
-							value="30"
-							oninput="document.getElementById('iterations-value').textContent = this.value"
-						/>
-						<label for="colormode">Shading:</label>
-						<select id="colormode">
-							<option value="0">Normalized</option>
-							<option value="1">Unstable map</option>
-						</select>
-					</div>
+			<div id="controls2" class="control-panel">
+				<h2>Buddhabrot Controls</h2>
+				<label for="bud_colormode">Color Mode:</label>
+				<select id="bud_colormode">
+					<option value="0">Intensity</option>
+					<option value="1">HSV</option>
+					<option value="2">Gradient</option>
+				</select>
+			</div>
 
-					<div id="controls2" style="display: none">
-						<!-- Sub controls for Button 2 -->
-						<select id="bud_colormode">
-							<option value="0">Intensity</option>
-							<option value="1">HSV</option>
-							<option value="2">Gradient</option>
-						</select>
-					</div>
-
-					<div id="controls3" style="display: none">
-						<!-- Sub controls for Button 3 -->
-						<input type="text" placeholder="Control 3.1" />
-						<input type="text" placeholder="Control 3.2" />
-					</div>
-				</div>
+			<div id="controls3" class="control-panel">
+				<h2>Mandelbulb Controls</h2>
+				<input type="text" placeholder="Control 3.1" />
+				<input type="text" placeholder="Control 3.2" />
 			</div>
 		</div>
+
 		<script type="module">
 			function hideAllControls() {
-				document.getElementById('controls1').style.display = 'none'
-				document.getElementById('controls2').style.display = 'none'
-				document.getElementById('controls3').style.display = 'none'
+				document.querySelectorAll('.control-panel').forEach((panel) => {
+					panel.style.display = 'none'
+				})
 			}
 
-			document.getElementById('button1').addEventListener('click', function () {
-				hideAllControls()
-				const controls = document.getElementById('controls1')
-				controls.style.display = 'flex'
-			})
-
-			document.getElementById('button2').addEventListener('click', function () {
-				hideAllControls()
-				const controls = document.getElementById('controls2')
-				controls.style.display = 'flex'
-			})
-
-			document.getElementById('button3').addEventListener('click', function () {
-				hideAllControls()
-				const controls = document.getElementById('controls3')
-				controls.style.display = 'flex'
+			document.querySelectorAll('.controls-overlay button').forEach((button) => {
+				button.addEventListener('click', function () {
+					hideAllControls()
+					const controlId = this.id.replace('button', 'controls')
+					const controls = document.getElementById(controlId)
+					controls.style.display = 'flex'
+				})
 			})
 		</script>
 	</body>
