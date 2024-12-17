@@ -15,9 +15,9 @@ async function main() {
 			vertex: 'shaders/brot_vert.glsl',
 			fragment: 'shaders/brot_frag.glsl',
 		},
-		buddhabrot: {
-			vertex: 'shaders/buddha_vert.glsl',
-			fragment: 'shaders/buddha_frag.glsl',
+		julia: {
+			vertex: 'shaders/julia_vert.glsl',
+			fragment: 'shaders/julia_frag.glsl',
 		},
 		mandelbulb: {
 			vertex: 'shaders/bulb_vert.glsl',
@@ -174,7 +174,7 @@ async function main() {
 
 	// Attach event listeners to buttons
 	document.getElementById('button1').addEventListener('click', () => switchShader('mandelbrot'))
-	document.getElementById('button2').addEventListener('click', () => switchShader('buddhabrot'))
+	document.getElementById('button2').addEventListener('click', () => switchShader('julia'))
 	document.getElementById('button3').addEventListener('click', () => switchShader('mandelbulb'))
 
 	// Other event listeners (iterations, color mode, etc.)
