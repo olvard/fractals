@@ -1,4 +1,4 @@
-precision mediump float;
+precision highp float;
 uniform vec2 u_resolution;
 uniform vec2 u_offset;
 uniform float u_zoom;
@@ -43,7 +43,6 @@ void main() {
 		iterations = maxIterations;
 	}
 
-
 	float normalized = iterations / maxIterations;
 
 	vec3 color = vec3(0.0); // Default to black
@@ -58,29 +57,17 @@ void main() {
 
 	} else if (u_colorMode == 1) {
 
-		color = vec3(1.0, 1.0 - exp(-length(z)), 1.0 - exp(-length(z)));
-	
-	} else if (u_colorMode == 2) {
-		// Measure instability of the orbit
-		float instability = length(z);
+		//color based on the number of iterations and unstable points
 
-		// Black for stable points
 		if (iterations >= maxIterations) {
 			color = vec3(0.0, 0.0, 0.0);
 		} else {
-			// Use normalized value to interpolate between colors
-			float r = 0.5 + 0.5 * sin(6.2831 * normalized + 0.0); // Red gradient
-			float g = 0.5 + 0.5 * sin(6.2831 * normalized + 2.0); // Green gradient
-			float b = 0.5 + 0.5 * sin(6.2831 * normalized + 4.0); // Blue gradient
-
-			color = vec3(r, g, b);
-		}
-
-	} else if (u_colorMode == 3) {
-		// Distance estimation
-		float distance = 0.5 * log(length(z)) / length(vec2(2.0 * z.x * z.y, z.x * z.x - z.y * z.y));
-		float shading = 1.0 - exp(-distance * 10.0);
-		color = vec3(shading) * vec3(0.0, 0.5, 1.0); // Adjust color scheme here
+			color = vec3(
+				0.5 + 0.5 * cos(3.0 + normalized * 10.0),
+				0.5 + 0.5 * cos(3.0 + normalized * 10.0 + 2.0),
+				0.5 + 0.5 * cos(3.0 + normalized * 10.0 + 4.0)
+			);
+		}xw
 	}
 
 	gl_FragColor = vec4(color, 1.0);

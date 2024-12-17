@@ -197,6 +197,7 @@ async function main() {
 		const zoomSpeed = 0.01
 		const zoomFactor = e.deltaY > 0 ? 1 + zoomSpeed : 1 - zoomSpeed
 		zoom *= zoomFactor
+
 		updateFractal()
 	})
 
