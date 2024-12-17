@@ -133,7 +133,7 @@ async function main() {
 	}
 
 	// Initial shader setup
-	currentShaderConfig = await initializeShaders('buddhabrot')
+	currentShaderConfig = await initializeShaders('mandelbrot')
 
 	// Render function
 	function updateFractal() {
