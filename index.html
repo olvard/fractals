@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<title>WebGL Demo</title>
+		<title>WebGL Fractal Explorer</title>
 		<script src="webgl.js" type="module"></script>
 		<link rel="stylesheet" href="style.css" />
 	</head>
@@ -37,12 +37,22 @@
 
 			<div id="controls2" class="control-panel">
 				<h2>Julia Controls</h2>
-				<label for="bud_colormode">Color Mode:</label>
-				<select id="bud_colormode">
-					<option value="0">Intensity</option>
-					<option value="1">HSV</option>
-					<option value="2">Gradient</option>
-				</select>
+				<label for="julia-iterations">Iterations: <span id="julia-iterations-value">30</span></label>
+				<input
+					type="range"
+					id="julia-iterations"
+					min="0"
+					max="1000"
+					value="30"
+					oninput="document.getElementById('julia-iterations-value').textContent = this.value"
+				/>
+				<div class="julia-crosshair-container">
+					<canvas id="julia-crosshair" width="200" height="200"></canvas>
+					<div class="crosshair-coordinates">
+						<span id="crosshair-x">0.0</span>,
+						<span id="crosshair-y">0.0</span>
+					</div>
+				</div>
 			</div>
 
 			<div id="controls3" class="control-panel">

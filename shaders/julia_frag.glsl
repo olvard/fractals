@@ -4,6 +4,7 @@ uniform vec2 u_offset;
 uniform float u_zoom;
 uniform float u_iterations;
 uniform int u_colorMode;
+uniform vec2 u_juliaConstant;
 
 vec3 hsv2rgb(vec3 c) {
     vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
@@ -22,7 +23,7 @@ void main() {
 	// z, a complex number
 	vec2 z = uv;
 	// c, a constant complex number that corresponds to −0.70176 − 0.3842i
-	vec2 c = vec2(-0.70176, -0.3842);
+	vec2 c = u_juliaConstant;
 
 	float iterations = 0.0;
 	float maxIterations = u_iterations; // Non-constant uniform value

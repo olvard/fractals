@@ -33,6 +33,44 @@ async function main() {
 	let iterations = 30
 	let colorMode = 0
 
+	// Julia specific state
+	let juliaCx = 0.0
+	let juliaCy = 0.0
+
+	// Julia crosshair canvas setup
+	const juliaCrosshairCanvas = document.getElementById('julia-crosshair')
+	const juliaCrosshairCtx = juliaCrosshairCanvas.getContext('2d')
+	const crosshairXSpan = document.getElementById('crosshair-x')
+	const crosshairYSpan = document.getElementById('crosshair-y')
+
+	function drawJuliaCrosshair() {
+		const width = juliaCrosshairCanvas.width
+		const height = juliaCrosshairCanvas.height
+
+		// Clear canvas
+		juliaCrosshairCtx.clearRect(0, 0, width, height)
+
+		// Draw mandelbrot representation
+		juliaCrosshairCtx.fillStyle = 'rgba(255, 255, 255, 0.1)'
+		juliaCrosshairCtx.fillRect(0, 0, width, height)
+
+		// Draw crosshair
+		const x = (juliaCx + 1.5) * (width / 3)
+		const y = (juliaCy + 1.5) * (height / 3)
+
+		juliaCrosshairCtx.beginPath()
+		juliaCrosshairCtx.strokeStyle = 'white'
+		juliaCrosshairCtx.moveTo(x, 0)
+		juliaCrosshairCtx.lineTo(x, height)
+		juliaCrosshairCtx.moveTo(0, y)
+		juliaCrosshairCtx.lineTo(width, y)
+		juliaCrosshairCtx.stroke()
+
+		// Update text coordinates
+		crosshairXSpan.textContent = juliaCx.toFixed(2)
+		crosshairYSpan.textContent = juliaCy.toFixed(2)
+	}
+
 	// Function to load shader source
 	async function loadShaderSource(url) {
 		try {
@@ -115,13 +153,16 @@ async function main() {
 			gl.enableVertexAttribArray(positionAttributeLocation)
 			gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0)
 
-			// Get uniform locations
+			// Add Julia constant uniform for Julia shader
+			const juliaConstant = shaderKey === 'julia' ? gl.getUniformLocation(program, 'u_juliaConstant') : null
+
 			const uniforms = {
 				resolution: gl.getUniformLocation(program, 'u_resolution'),
 				zoom: gl.getUniformLocation(program, 'u_zoom'),
 				offset: gl.getUniformLocation(program, 'u_offset'),
 				iterations: gl.getUniformLocation(program, 'u_iterations'),
 				colorMode: gl.getUniformLocation(program, 'u_colorMode'),
+				juliaConstant: juliaConstant,
 			}
 
 			// Set resolution uniform (doesn't change between shaders)
@@ -148,6 +189,11 @@ async function main() {
 		gl.uniform1f(uniforms.zoom, zoom)
 		gl.uniform1f(uniforms.iterations, iterations)
 		gl.uniform1i(uniforms.colorMode, colorMode)
+
+		// Add Julia constant uniform if exists
+		if (uniforms.juliaConstant) {
+			gl.uniform2f(uniforms.juliaConstant, juliaCx, juliaCy)
+		}
 
 		// Clear and draw
 		gl.clearColor(0.0, 0.0, 0.0, 1.0)
@@ -178,17 +224,38 @@ async function main() {
 	document.getElementById('button3').addEventListener('click', () => switchShader('mandelbulb'))
 
 	// Other event listeners (iterations, color mode, etc.)
+
+	// Add Julia crosshair interaction
+	juliaCrosshairCanvas.addEventListener('mousemove', (e) => {
+		const rect = juliaCrosshairCanvas.getBoundingClientRect()
+		const x = e.clientX - rect.left
+		const y = e.clientY - rect.top
+
+		// Convert to normalized coordinates (-1.5 to 1.5)
+		juliaCx = x / (rect.width / 3) - 1.5
+		juliaCy = y / (rect.height / 3) - 1.5
+
+		drawJuliaCrosshair()
+
+		// Update Julia shader if currently selected
+		if (currentShaderConfig && currentShaderConfig.uniforms) {
+			gl.uniform2f(currentShaderConfig.uniforms.juliaConstant, juliaCx, juliaCy)
+			updateFractal()
+		}
+	})
+
 	document.getElementById('iterations').addEventListener('input', (e) => {
 		iterations = parseInt(e.target.value)
 		updateFractal()
 	})
 
-	document.getElementById('colormode').addEventListener('change', (e) => {
-		colorMode = parseInt(e.target.value)
+	//julia slider
+	document.getElementById('julia-iterations').addEventListener('input', (e) => {
+		iterations = parseInt(e.target.value)
 		updateFractal()
 	})
 
-	document.getElementById('bud_colormode').addEventListener('change', (e) => {
+	document.getElementById('colormode').addEventListener('change', (e) => {
 		colorMode = parseInt(e.target.value)
 		updateFractal()
 	})

@@ -76,3 +76,31 @@ button:hover {
 	padding: 5px;
 	border-radius: 5px;
 }
+
+.julia-crosshair-container {
+	position: fixed;
+	top: 450px;
+	left: 20px;
+	z-index: 10;
+	background-color: rgba(0, 0, 0, 0.7);
+	border-radius: 10px;
+	padding: 10px;
+}
+
+#julia-crosshair {
+	width: 200px;
+	height: 200px;
+	border: 1px solid #ffffff;
+	/* background-color: rgba(255, 255, 255, 0.1); */
+	background-color: rgba(0, 0, 0, 1);
+	top: 240px;
+	left: 20px;
+	cursor: crosshair;
+}
+
+.crosshair-coordinates {
+	margin-top: 10px;
+	color: #ffffff;
+	font-family: monospace;
+	text-align: center;
+}
