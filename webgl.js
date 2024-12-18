@@ -50,10 +50,6 @@ async function main() {
 		// Clear canvas
 		juliaCrosshairCtx.clearRect(0, 0, width, height)
 
-		// Draw mandelbrot representation
-		juliaCrosshairCtx.fillStyle = 'rgba(255, 255, 255, 0.1)'
-		juliaCrosshairCtx.fillRect(0, 0, width, height)
-
 		// Draw crosshair
 		const x = (juliaCx + 1.5) * (width / 3)
 		const y = (juliaCy + 1.5) * (height / 3)
@@ -226,22 +222,38 @@ async function main() {
 	// Other event listeners (iterations, color mode, etc.)
 
 	// Add Julia crosshair interaction
+	let isJuliaDragging = false
+
+	juliaCrosshairCanvas.addEventListener('mousedown', () => {
+		isJuliaDragging = true
+	})
+
 	juliaCrosshairCanvas.addEventListener('mousemove', (e) => {
-		const rect = juliaCrosshairCanvas.getBoundingClientRect()
-		const x = e.clientX - rect.left
-		const y = e.clientY - rect.top
+		if (isJuliaDragging) {
+			const rect = juliaCrosshairCanvas.getBoundingClientRect()
+			const x = e.clientX - rect.left
+			const y = e.clientY - rect.top
 
-		// Convert to normalized coordinates (-1.5 to 1.5)
-		juliaCx = x / (rect.width / 3) - 1.5
-		juliaCy = y / (rect.height / 3) - 1.5
+			// Convert to normalized coordinates (-1.5 to 1.5)
+			juliaCx = x / (rect.width / 3) - 1.5
+			juliaCy = y / (rect.height / 3) - 1.5
 
-		drawJuliaCrosshair()
+			drawJuliaCrosshair()
 
-		// Update Julia shader if currently selected
-		if (currentShaderConfig && currentShaderConfig.uniforms) {
-			gl.uniform2f(currentShaderConfig.uniforms.juliaConstant, juliaCx, juliaCy)
-			updateFractal()
+			// Update Julia shader if currently selected
+			if (currentShaderConfig && currentShaderConfig.uniforms) {
+				gl.uniform2f(currentShaderConfig.uniforms.juliaConstant, juliaCx, juliaCy)
+				updateFractal()
+			}
 		}
+	})
+
+	juliaCrosshairCanvas.addEventListener('mouseup', () => {
+		isJuliaDragging = false
+	})
+
+	juliaCrosshairCanvas.addEventListener('mouseleave', () => {
+		isJuliaDragging = false
 	})
 
 	document.getElementById('iterations').addEventListener('input', (e) => {
