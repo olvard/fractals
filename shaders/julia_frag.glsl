@@ -22,7 +22,6 @@ void main() {
 
 	// z, a complex number
 	vec2 z = uv;
-	// c, a constant complex number that corresponds to −0.70176 − 0.3842i
 	vec2 c = u_juliaConstant;
 
 	float iterations = 0.0;

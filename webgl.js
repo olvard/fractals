@@ -1,3 +1,5 @@
+import { drawMandelbrot } from '/utility.js'
+
 async function main() {
 	const canvas = document.querySelector('#gl-canvas')
 	canvas.width = window.innerWidth
@@ -50,7 +52,9 @@ async function main() {
 		// Clear canvas
 		juliaCrosshairCtx.clearRect(0, 0, width, height)
 
-		// Draw crosshair
+		drawMandelbrot(juliaCrosshairCanvas)
+
+		// Convert from Mandelbrot coordinates back to canvas coordinates
 		const x = (juliaCx + 1.5) * (width / 3)
 		const y = (juliaCy + 1.5) * (height / 3)
 
