@@ -215,8 +215,14 @@ async function main() {
 	}
 
 	// Attach event listeners to buttons
-	document.getElementById('button1').addEventListener('click', () => switchShader('mandelbrot'))
-	document.getElementById('button2').addEventListener('click', () => switchShader('julia'))
+	document.getElementById('button1').addEventListener('click', async () => {
+		iterations = 30 // Reset iterations
+		await switchShader('mandelbrot')
+	})
+	document.getElementById('button2').addEventListener('click', async () => {
+		iterations = 30 // Reset iterations
+		await switchShader('julia')
+	})
 	document.getElementById('button3').addEventListener('click', () => switchShader('mandelbulb'))
 
 	// Other event listeners (iterations, color mode, etc.)

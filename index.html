@@ -69,11 +69,42 @@
 				})
 			}
 
+			function resetControls(panelId) {
+				if (panelId === 'controls1') {
+					// Reset Mandelbrot controls
+					const iterationsSlider = document.getElementById('iterations')
+					const iterationsValue = document.getElementById('iterations-value')
+					iterationsSlider.value = 30 // Default value
+					iterationsValue.textContent = 30
+
+					const colorMode = document.getElementById('colormode')
+					colorMode.value = '0' // Default shading option
+				} else if (panelId === 'controls2') {
+					// Reset Julia controls
+					const juliaIterationsSlider = document.getElementById('julia-iterations')
+					const juliaIterationsValue = document.getElementById('julia-iterations-value')
+					juliaIterationsSlider.value = 30 // Default value
+					juliaIterationsValue.textContent = 30
+
+					const crosshairX = document.getElementById('crosshair-x')
+					const crosshairY = document.getElementById('crosshair-y')
+					crosshairX.textContent = '0.0' // Default coordinates
+					crosshairY.textContent = '0.0'
+				} else if (panelId === 'controls3') {
+					// Reset Mandelbulb controls (if needed)
+					const controlInputs = document.querySelectorAll('#controls3 input')
+					controlInputs.forEach((input) => {
+						input.value = '' // Clear text inputs
+					})
+				}
+			}
+
 			document.querySelectorAll('.controls-overlay button').forEach((button) => {
 				button.addEventListener('click', function () {
 					hideAllControls()
 					const controlId = this.id.replace('button', 'controls')
 					const controls = document.getElementById(controlId)
+					resetControls(controlId)
 					controls.style.display = 'flex'
 				})
 			})
