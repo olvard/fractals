@@ -35,6 +35,11 @@ async function main() {
 	let iterations = 30
 	let colorMode = 0
 
+	//rotating bulb
+	let angle = 0.0
+	//bulb power
+	let power = 8
+
 	// Julia specific state
 	let juliaCx = 0.0
 	let juliaCy = 0.0
@@ -162,6 +167,8 @@ async function main() {
 				offset: gl.getUniformLocation(program, 'u_offset'),
 				iterations: gl.getUniformLocation(program, 'u_iterations'),
 				colorMode: gl.getUniformLocation(program, 'u_colorMode'),
+				angle: gl.getUniformLocation(program, 'u_angle'),
+				power: gl.getUniformLocation(program, 'u_power'),
 				juliaConstant: juliaConstant,
 			}
 
@@ -189,6 +196,8 @@ async function main() {
 		gl.uniform1f(uniforms.zoom, zoom)
 		gl.uniform1f(uniforms.iterations, iterations)
 		gl.uniform1i(uniforms.colorMode, colorMode)
+		gl.uniform1f(uniforms.angle, angle)
+		gl.uniform1i(uniforms.power, power)
 
 		// Add Julia constant uniform if exists
 		if (uniforms.juliaConstant) {
@@ -221,13 +230,25 @@ async function main() {
 	// Attach event listeners to buttons
 	document.getElementById('button1').addEventListener('click', async () => {
 		iterations = 30 // Reset iterations
+		zoom = 0.5
+		offsetX = 0.5
+		offsetY = 0.0
 		await switchShader('mandelbrot')
 	})
 	document.getElementById('button2').addEventListener('click', async () => {
 		iterations = 30 // Reset iterations
+		zoom = 0.5
+		offsetX = 0.5
+		offsetY = 0.0
 		await switchShader('julia')
 	})
-	document.getElementById('button3').addEventListener('click', () => switchShader('mandelbulb'))
+	document.getElementById('button3').addEventListener('click', async () => {
+		iterations = 30 // Reset iterations
+		zoom = 1.5
+		offsetX = -0.2
+		offsetY = -0.8
+		await switchShader('mandelbulb')
+	})
 
 	// Other event listeners (iterations, color mode, etc.)
 
@@ -273,6 +294,12 @@ async function main() {
 
 	//julia slider
 	document.getElementById('julia-iterations').addEventListener('input', (e) => {
+		iterations = parseInt(e.target.value)
+		updateFractal()
+	})
+
+	//bulb slider
+	document.getElementById('bulb-iterations').addEventListener('input', (e) => {
 		iterations = parseInt(e.target.value)
 		updateFractal()
 	})
@@ -324,6 +351,18 @@ async function main() {
 
 	canvas.addEventListener('mouseleave', () => {
 		isDragging = false
+	})
+
+	//bulb rotation
+	document.getElementById('angle').addEventListener('input', (e) => {
+		angle = parseFloat(e.target.value)
+		updateFractal()
+	})
+
+	//bulb power
+	document.getElementById('power').addEventListener('input', (e) => {
+		power = parseFloat(e.target.value)
+		updateFractal()
 	})
 
 	window.addEventListener('resize', () => {

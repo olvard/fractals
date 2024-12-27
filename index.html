@@ -58,8 +58,34 @@
 
 			<div id="controls3" class="control-panel">
 				<h2>Mandelbulb Controls</h2>
-				<input type="text" placeholder="Control 3.1" />
-				<input type="text" placeholder="Control 3.2" />
+				<label for="power">Power: <span id="power-value"></span></label>
+				<input
+					type="range"
+					id="power"
+					min="1"
+					max="20"
+					value="8"
+					oninput="document.getElementById('power-value').textContent = this.value"
+				/>
+				<label for="bulb-iterations">Iterations: <span id="bulb-iterations-value"></span></label>
+				<input
+					type="range"
+					id="bulb-iterations"
+					min="0"
+					max="1000"
+					value="30"
+					oninput="document.getElementById('bulb-iterations-value').textContent = this.value"
+				/>
+				<label for="angle">Rotation: <span id="angle-value"></span></label>
+				<input
+					type="range"
+					id="angle"
+					min="0"
+					max="10"
+					value="0"
+					step="0.1"
+					oninput="document.getElementById('angle-value').textContent = this.value"
+				/>
 			</div>
 		</div>
 
