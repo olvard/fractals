@@ -86,6 +86,7 @@ vec3 getColor(float dist, vec3 pos) {
 	color = vec3(0.5 + 0.5 * cos(3.0 + dist * 10.0),
 					0.5 + 0.5 * cos(3.0 + dist * 10.0 + 2.0),
 					0.5 + 0.5 * cos(3.0 + dist * 10.0 + 4.0));
+
     return color;
 }
 
