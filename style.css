@@ -45,6 +45,10 @@ button:hover {
 	background-color: rgba(255, 255, 255, 0.4);
 }
 
+button:focus {
+	background-color: #000000;
+}
+
 .control-panel {
 	display: none;
 	flex-direction: column;
@@ -90,11 +94,6 @@ button:hover {
 #julia-crosshair {
 	width: 200px;
 	height: 200px;
-	/* background-image: url('mandelbrot200.png');
-	background-size: cover;
-	background-position: center;
-	background-blend-mode: overlay; */
-	/* background-color: rgba(255, 255, 255, 0.1); */
 	background-color: rgba(0, 0, 0, 0.1);
 	border-radius: 10px;
 	top: 240px;

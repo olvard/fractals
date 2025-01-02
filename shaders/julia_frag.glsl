@@ -6,6 +6,8 @@ uniform float u_iterations;
 uniform int u_colorMode;
 uniform vec2 u_juliaConstant;
 
+// essentially the same as the mandelbrot set, but with a constant c
+
 vec3 hsv2rgb(vec3 c) {
     vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
     vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
@@ -25,9 +27,9 @@ void main() {
 	vec2 c = u_juliaConstant;
 
 	float iterations = 0.0;
-	float maxIterations = u_iterations; // Non-constant uniform value
+	float maxIterations = u_iterations; 
 
-	const float MAX_LOOP = 1000.0; // Fixed maximum loop count
+	const float MAX_LOOP = 1000.0; 
 
 	for (float n = 0.0; n < MAX_LOOP; n += 1.0) {
 		if (n >= maxIterations) break;
@@ -42,13 +44,13 @@ void main() {
 			break;
 		}
 
-		iterations = n; // Store iteration count
+		iterations = n; 
 	}
 
 	float smooth_iter = float(iterations) + 1.0 - log2(log2(dot(z, z)));
     smooth_iter = clamp(smooth_iter, 0.0, float(maxIterations));
                 
-    // Create a colorful visualization
+    // rainbow colors
     float hue = smooth_iter / float(maxIterations);
     vec3 color = hsv2rgb(vec3(hue, 0.8, iterations < maxIterations ? 1.0 : 0.0));
                 

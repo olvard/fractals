@@ -27,7 +27,7 @@ async function main() {
 		},
 	}
 
-	// Shared state
+	// initials
 	let currentShaderConfig = null
 	let zoom = 0.5
 	let offsetX = 0.5
@@ -40,7 +40,7 @@ async function main() {
 	//bulb power
 	let power = 8
 
-	// Julia specific state
+	// Julia specific states
 	let juliaCx = 0.0
 	let juliaCy = 0.0
 
@@ -139,11 +139,10 @@ async function main() {
 		try {
 			console.log(`Initializing ${shaderKey} shader`)
 
-			// Load shader sources
+			// load sources
 			const vertexShaderSource = await loadShaderSource(shaderConfigs[shaderKey].vertex)
 			const fragmentShaderSource = await loadShaderSource(shaderConfigs[shaderKey].fragment)
 
-			// Create shader program
 			const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
 			gl.useProgram(program)
 
@@ -153,7 +152,7 @@ async function main() {
 			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer)
 			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW)
 
-			// Set up attribute
+			// Set up attributes
 			const positionAttributeLocation = gl.getAttribLocation(program, 'a_Position')
 			gl.enableVertexAttribArray(positionAttributeLocation)
 			gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0)
@@ -172,7 +171,6 @@ async function main() {
 				juliaConstant: juliaConstant,
 			}
 
-			// Set resolution uniform (doesn't change between shaders)
 			gl.uniform2f(uniforms.resolution, canvas.width, canvas.height)
 
 			return { program, uniforms }
@@ -213,7 +211,6 @@ async function main() {
 	// Button event listeners
 	async function switchShader(shaderKey) {
 		try {
-			// Stop any ongoing operations
 			gl.useProgram(null)
 
 			// Initialize new shader
@@ -227,7 +224,7 @@ async function main() {
 		}
 	}
 
-	// Attach event listeners to buttons
+	// buttons
 	document.getElementById('button1').addEventListener('click', async () => {
 		iterations = 30 // Reset iterations
 		zoom = 0.5
@@ -250,7 +247,7 @@ async function main() {
 		await switchShader('mandelbulb')
 	})
 
-	// Other event listeners (iterations, color mode, etc.)
+	//more event listeners
 
 	// Add Julia crosshair interaction
 	let isJuliaDragging = false
@@ -369,9 +366,7 @@ async function main() {
 		const canvas = document.getElementById('gl-canvas')
 		canvas.width = window.innerWidth
 		canvas.height = window.innerHeight
-		// You'll need to update your WebGL viewport here as well
 		gl.viewport(0, 0, canvas.width, canvas.height)
-		// Re-render your scene
 		updateFractal()
 	})
 
@@ -379,5 +374,4 @@ async function main() {
 	updateFractal()
 }
 
-// Call main to start the WebGL program
 main()

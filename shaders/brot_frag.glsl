@@ -19,9 +19,9 @@ void main() {
 	vec2 c = uv;
 
 	float iterations = 0.0;
-	float maxIterations = u_iterations; // Non-constant uniform value
+	float maxIterations = u_iterations; 
 
-	const float MAX_LOOP = 1000.0; // Fixed maximum loop count
+	const float MAX_LOOP = 1000.0; 
 
 	for (float n = 0.0; n < MAX_LOOP; n += 1.0) {
 		if (n >= maxIterations) break;
@@ -33,7 +33,7 @@ void main() {
 
 		// Check if the magnitude exceeds the escape threshold
 		if (dot(z, z) > 4.0) {
-			iterations = n; // Store iteration count
+			iterations = n; 
 			break;
 		}
 	}
