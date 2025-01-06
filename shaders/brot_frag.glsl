@@ -23,7 +23,7 @@ void main() {
 
 	const float MAX_LOOP = 1000.0; 
 
-	for (float n = 0.0; n < MAX_LOOP; n += 1.0) {
+	for (float n = 0.0; n < MAX_LOOP; n++) {
 		if (n >= maxIterations) break;
 
 		z = vec2(
