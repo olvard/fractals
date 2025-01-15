@@ -1,4 +1,4 @@
-import { drawMandelbrot } from '/utility.js'
+import { drawMandelbrot } from 'utility.js'
 
 async function main() {
 	const canvas = document.querySelector('#gl-canvas')
